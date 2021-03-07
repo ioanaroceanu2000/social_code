@@ -1,0 +1,117 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en-US">
+  <head>
+    <style>
+
+    .topnav {
+      overflow: hidden;
+      background-color: #333;
+      padding: 5px;
+      width: 100%;
+    }
+
+    .topnav a {
+      float: left;
+      color: #f2f2f2;
+      text-align: center;
+      padding: 14px 16px;
+      text-decoration: none;
+      font-size: 17px;
+    }
+
+    .topnav a:hover {
+      background-color: #ddd;
+      color: black;
+    }
+
+    .topnav a.active {
+      background-color: #4CAF50;
+      color: white;
+    }
+    </style>
+
+    <title></title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <script type="text/javascript" src="model.js"></script>
+  </head>
+  <body style="background-color: #F9F9F9; font-family: Helvetica,Arial,sans-serif;">
+
+
+    <div class="topnav">
+      <a style="border-radius: 10px; margin: 2px;" href="./eveg.html">Home</a>
+      <a style="border-radius: 10px; margin: 2px;" href="./shop.html">Shop</a>
+      <a style="border-radius: 10px; margin: 2px;" class="active" href="./basket.html">Basket</a>
+      <a style="border-radius: 10px; margin: 2px;" href="#support">Support</a>
+    </div>
+
+    <div >
+    <h1 style="color: green; margin-left: 40px; margin-top: 40px" >Basket</h1>
+    <form>
+      <table>
+        <script>
+          document.write('      <div >\n');
+          var basket = readBasket();
+          var productDetails = getProductDetails();
+          var totalPrice = 0;
+          for (var product in productDetails) {
+            var priceUnits = basket[product]*productDetails[product]["price"];
+            totalPrice+=priceUnits;
+            priceUnits = priceUnits.toFixed(2);
+            if (basket[product] > 0) {
+              document.write('      <table style="padding:1%; background-color:white; border: 10px; border-radius:5px; width: 50%; margin: 30px; background-opacity:0.5;">\n');
+              document.write('       <tr>\n');
+              document.write('         <td style="width: 80px" ><img src="img/' + productDetails[product]["image"] +  '" / style="width: 80px; height: 80px;"></td>\n');
+              document.write('         <td style="width: 80px; text-align: left; padding-left: 10px; padding-right: 10px">'+ productDetails[product]["name"] +' '+ productDetails[product]["units"] +'</td>\n');
+              document.write('         <td style="width: 160px;">&pound;' + productDetails[product]["price"]+ " x " + basket[product] + '</td>\n');
+              document.write('         <td style="width: 10px;"><input style="width: 40px;" name="' + product + '" id="' + product + '" type="text" placeholder="e.g. 2" /></td>\n');
+              document.write('         <td style="width: 80px; padding-right: 50px;"><input style="background-color: white; width: 120px; height: 30px; border-radius: 5px; color: green; font-size: 10px;" name="change' + product + '" type="button" value="Change quantity" onclick="javascript:changeProductQuantity(\'' + product + '\', document.getElementById(\'' + product + '\').value)" /></td>\n');
+              document.write('         <td style="width: 80px;"><input style="background-color: white; width: 120px; height: 30px; border-radius: 5px; color: green; font-size: 10px;" name="delete' + product + '" type="button" value="Delete" onclick="javascript:removeProductFromBasket(\''+ product+ '\')" /></td>\n');
+              document.write('       </tr>\n');
+              document.write('      </table>\n');
+            }
+          }
+          document.write('      </div>\n');
+          document.write('       <tr>\n');
+          document.write('         <td style="height: 40px;"><hr style="opacity: 0.2;"></td>\n');
+          document.write('       </tr>\n');
+          var totals = calculateTotals();
+          document.write('      <table style="padding:1%; background-color:white; border: 10px; border-radius:5px; width: 50%; margin: 30px; background-opacity:0.5;">\n');
+          document.write('       <tr>\n');
+          document.write('         <td style="width: 1200px; font-size: 20px"> Total to pay:  ' + totals["total"] + '&pound;</td>\n');
+          document.write('       </tr>\n');
+          document.write('       <tr>\n');
+          document.write('         <td style="width: 1200px; font-size: 20px"> </td>\n');
+          document.write('       </tr>\n');
+          document.write('       <tr>\n');
+          document.write('         <td style="width: 1200px; color: #737373; font-size: 14px">Total without VAT: ' + totals["totalnovat"] + '&pound;</td>\n');
+          document.write('       </tr>\n');
+          document.write('       <tr>\n');
+          document.write('         <td style="width: 1200px; color: #737373; font-size: 14px"> VAT: ' + totals["vat"]  + '&pound;</td>\n');
+          document.write('       </tr>\n');
+        </script>
+
+        <tr> <td><br></td></tr>
+        <tr style="margin-top: 20px;">
+          <td>
+            <form >
+              <input type="button" name="viewbasket" value="Order" onclick="document.location='order.html'" style="background-color: #333; width: 170px; height: 30px;  border-radius: 7px; color: white; font-size: 15px"/>
+            </form>
+          </td>
+          <td>
+            <form >
+              <input type="button" name="order" value="Continue Shopping" onclick="document.location='shop.html'" style="background-color: #333; width: 170px; height: 30px;  border-radius: 7px; color: white; font-size: 15px"/>
+            </form>
+          </td>
+          <td>
+            <form>
+              <input type="button" name="order" value="Clear Basket" onclick="javascript:createEmptyBasket()" style="background-color: #333; width: 120px; height: 30px;  border-radius: 7px; color: white; font-size: 15px"/>
+            </form>
+          </td>
+        </tr>
+        </table>
+      </table>
+
+
+  </div>
+  </body>
+</html>
